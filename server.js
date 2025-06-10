@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // SECURE: API key - Use environment variable in production
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDdeRd1UJw5giBLWwELiSpb6MGyKm-4ohY';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // Rate limiting middleware
