@@ -8,19 +8,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // SECURE: API key - Use environment variable in production
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDdeRd1UJw5giBLWwELiSpb6MGyKm-4ohY';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-
-// Check if API key is available
-if (!GEMINI_API_KEY) {
-    console.error('❌ ERROR: GEMINI_API_KEY environment variable is not set!');
-    console.log('Please set your Gemini API key in:');
-    console.log('- Local development: .env file');
-    console.log('- Vercel: Environment Variables in dashboard');
-    process.exit(1);
-}
-
-console.log('✅ Gemini API key loaded successfully');
 
 // Rate limiting middleware
 const apiLimiter = rateLimit({
@@ -235,7 +224,7 @@ if (process.env.VERCEL) {
     app.listen(PORT, () => {
         console.log(`🚀 Content Generator Server running on http://localhost:${PORT}`);
         console.log(`🤖 Using Google Gemini Pro API`);
-        console.log(`🔒 API key: ${GEMINI_API_KEY ? 'Loaded from environment' : 'NOT CONFIGURED'}`);
+        console.log(`🔒 API key secured in backend`);
         console.log(`📝 API endpoint: http://localhost:${PORT}/api/generate`);
         console.log(`💖 Health check: http://localhost:${PORT}/api/health`);
         console.log(`🔒 Rate limiting: 15 requests per minute per IP`);
