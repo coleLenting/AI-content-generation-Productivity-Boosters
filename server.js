@@ -1,21 +1,20 @@
-// server.js - Secure Backend with Google Gemini API
+// server.js - Vercel-Compatible Backend with Google Gemini API
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// SECURE: API key stored in backend only
-const GEMINI_API_KEY = 'AIzaSyDdeRd1UJw5giBLWwELiSpb6MGyKm-4ohY';
+// SECURE: API key - Use environment variable in production
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDdeRd1UJw5giBLWwELiSpb6MGyKm-4ohY';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // Rate limiting middleware
 const apiLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
-    max: 15, // 15 requests per minute (generous for free tier)
+    max: 15, // 15 requests per minute
     message: {
         error: 'Too many requests. Please wait a minute and try again.'
     },
@@ -25,8 +24,10 @@ const apiLimiter = rateLimit({
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Apply rate limiting only to API routes
 app.use('/api/', apiLimiter);
 
 // Retry logic for Gemini API
@@ -34,6 +35,9 @@ async function makeGeminiRequestWithRetry(prompt, maxRetries = 3) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
             console.log(`Gemini API attempt ${attempt + 1} of ${maxRetries}`);
+            
+            // Use global fetch if available (Node 18+), otherwise require node-fetch
+            const fetch = globalThis.fetch || require('node-fetch');
             
             const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
@@ -82,7 +86,7 @@ async function makeGeminiRequestWithRetry(prompt, maxRetries = 3) {
     }
 }
 
-// Content generation endpoint - NO API KEY REQUIRED FROM FRONTEND
+// Content generation endpoint
 app.post('/api/generate', async (req, res) => {
     try {
         const { prompt } = req.body;
@@ -105,7 +109,14 @@ Please provide a well-structured, professional response.`;
         const response = await makeGeminiRequestWithRetry(enhancedPrompt);
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            const errorData = await response.text();
+            let parsedError;
+            
+            try {
+                parsedError = JSON.parse(errorData);
+            } catch (e) {
+                parsedError = { error: { message: errorData } };
+            }
             
             if (response.status === 400) {
                 return res.status(400).json({ 
@@ -123,7 +134,7 @@ Please provide a well-structured, professional response.`;
             }
             
             return res.status(response.status).json({ 
-                error: errorData.error?.message || `Gemini API error (${response.status})` 
+                error: parsedError.error?.message || `Gemini API error (${response.status})` 
             });
         }
 
@@ -147,7 +158,7 @@ Please provide a well-structured, professional response.`;
     } catch (error) {
         console.error('Server Error:', error);
         
-        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        if (error.message && error.message.includes('fetch')) {
             res.status(503).json({ 
                 error: 'Unable to connect to Gemini API. Please try again later.' 
             });
@@ -166,7 +177,8 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString(),
         version: '2.0.0',
         model: 'gemini-pro',
-        features: ['secure-api-key', 'rate-limiting', 'retry-logic']
+        features: ['secure-api-key', 'rate-limiting', 'retry-logic'],
+        environment: process.env.VERCEL ? 'vercel' : 'local'
     });
 });
 
@@ -175,12 +187,24 @@ app.get('/api/test', (req, res) => {
     res.json({ 
         message: 'Gemini API server is running!',
         timestamp: new Date().toISOString(),
-        secure: true
+        secure: true,
+        environment: process.env.VERCEL ? 'vercel' : 'local'
     });
 });
 
 // Serve the main HTML file
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Catch-all route for SPA
+app.get('*', (req, res) => {
+    // If it's an API route that doesn't exist, return 404 JSON
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    
+    // Otherwise serve the main HTML file
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -192,14 +216,17 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`🚀 Content Generator Server running on http://localhost:${PORT}`);
-    console.log(`🤖 Using Google Gemini Pro API`);
-    console.log(`🔒 API key secured in backend`);
-    console.log(`📝 API endpoint: http://localhost:${PORT}/api/generate`);
-    console.log(`💖 Health check: http://localhost:${PORT}/api/health`);
-    console.log(`🔒 Rate limiting: 15 requests per minute per IP`);
-});
-
-module.exports = app;
+// For Vercel
+if (process.env.VERCEL) {
+    module.exports = app;
+} else {
+    // For local development
+    app.listen(PORT, () => {
+        console.log(`🚀 Content Generator Server running on http://localhost:${PORT}`);
+        console.log(`🤖 Using Google Gemini Pro API`);
+        console.log(`🔒 API key secured in backend`);
+        console.log(`📝 API endpoint: http://localhost:${PORT}/api/generate`);
+        console.log(`💖 Health check: http://localhost:${PORT}/api/health`);
+        console.log(`🔒 Rate limiting: 15 requests per minute per IP`);
+    });
+}
