@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 // SECURE: API key - Use environment variable in production
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyDdeRd1UJw5giBLWwELiSpb6MGyKm-4ohY';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
 // Rate limiting middleware
 const apiLimiter = rateLimit({
@@ -36,8 +36,8 @@ async function makeGeminiRequestWithRetry(prompt, maxRetries = 3) {
         try {
             console.log(`Gemini API attempt ${attempt + 1} of ${maxRetries}`);
             
-            // Use node-fetch equivalent or built-in fetch (Node 18+)
-            const fetch = (await import('node-fetch')).default;
+            // Use global fetch if available (Node 18+), otherwise require node-fetch
+            const fetch = globalThis.fetch || require('node-fetch');
             
             const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
