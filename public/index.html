@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Content Generator - Productivity Boosters</title>
+    <title>AI Content Generator - Productivity Suite</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="./styles.css">
     
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 AI Content Generator</h1>
-            <p>Productivity Boosters - Generate professional content in seconds</p>
+            <h1>AI Content Generator</h1>
+            <p>Create professional content in seconds with AI assistance</p>
         </div>
 
         <div class="powered-by">
             <h3>🤖 Powered by Google Gemini Pro</h3>
-            <p>Free AI generation with no API key required! Just start creating content instantly.</p>
+            <p>Generate high-quality content instantly with no API key required</p>
         </div>
 
         <div class="status-message" id="statusMessage"></div>
 
-        <div class="content-types">
+        <div class="content-grid">
             <!-- Email Assistant -->
             <div class="content-card">
-                <h3><span class="icon">📧</span>Email Assistant</h3>
+                <h3><span class="icon">✉️</span>Email Assistant</h3>
                 <div class="form-group">
-                    <label>Email Type:</label>
+                    <label>Email Type</label>
                     <select id="emailType">
                         <option value="follow-up">Follow-up Email</option>
                         <option value="meeting-request">Meeting Request</option>
@@ -36,11 +37,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Context/Details:</label>
+                    <label>Context/Details</label>
                     <textarea id="emailContext" placeholder="e.g., Following up on delayed project with client ABC..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Tone:</label>
+                    <label>Tone</label>
                     <select id="emailTone">
                         <option value="professional">Professional</option>
                         <option value="friendly">Friendly</option>
@@ -53,17 +54,17 @@
 
             <!-- Meeting Summarizer -->
             <div class="content-card">
-                <h3><span class="icon">📋</span>Meeting Summarizer</h3>
+                <h3><span class="icon">📝</span>Meeting Notes</h3>
                 <div class="form-group">
-                    <label>Meeting Title:</label>
+                    <label>Meeting Title</label>
                     <input type="text" id="meetingTitle" placeholder="e.g., Weekly Team Standup">
                 </div>
                 <div class="form-group">
-                    <label>Meeting Notes/Bullet Points:</label>
+                    <label>Meeting Notes</label>
                     <textarea id="meetingNotes" placeholder="• Discussed project timeline&#10;• John will handle design&#10;• Next deadline: Friday"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Summary Style:</label>
+                    <label>Summary Style</label>
                     <select id="summaryStyle">
                         <option value="concise">Concise</option>
                         <option value="detailed">Detailed</option>
@@ -77,20 +78,20 @@
             <div class="content-card">
                 <h3><span class="icon">📊</span>Report Generator</h3>
                 <div class="form-group">
-                    <label>Report Type:</label>
+                    <label>Report Type</label>
                     <select id="reportType">
-                        <option value="weekly">Weekly Status Report</option>
+                        <option value="weekly">Weekly Status</option>
                         <option value="project">Project Update</option>
                         <option value="monthly">Monthly Summary</option>
                         <option value="incident">Incident Report</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Key Points/Data:</label>
+                    <label>Key Points/Data</label>
                     <textarea id="reportData" placeholder="• Completed 5 tasks&#10;• Budget: 80% used&#10;• Next milestones..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Target Audience:</label>
+                    <label>Target Audience</label>
                     <select id="reportAudience">
                         <option value="management">Management</option>
                         <option value="team">Team Members</option>
@@ -103,9 +104,9 @@
 
             <!-- Social Media Content -->
             <div class="content-card">
-                <h3><span class="icon">📱</span>Social Media Content</h3>
+                <h3><span class="icon">📱</span>Social Content</h3>
                 <div class="form-group">
-                    <label>Platform:</label>
+                    <label>Platform</label>
                     <select id="socialPlatform">
                         <option value="linkedin">LinkedIn</option>
                         <option value="twitter">Twitter/X</option>
@@ -114,11 +115,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Content Topic/Message:</label>
+                    <label>Content Topic</label>
                     <textarea id="socialContent" placeholder="e.g., Sharing insights about remote work productivity..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Content Style:</label>
+                    <label>Content Style</label>
                     <select id="socialStyle">
                         <option value="professional">Professional</option>
                         <option value="engaging">Engaging</option>
@@ -130,194 +131,53 @@
             </div>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
+        <div class="loading-state" id="loading">
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
             <p>Generating your content with AI...</p>
         </div>
 
-        <div class="result-area" id="resultArea">
-            <h3>Generated Content</h3>
+        <div class="result-container" id="resultArea">
+            <h3>📄 Generated Content</h3>
             <div class="result-content" id="resultContent"></div>
-            <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+            <div class="action-buttons">
+                <button class="copy-btn" onclick="copyToClipboard()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy to Clipboard
+                </button>
+                <button class="new-btn" onclick="resetForm()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                    </svg>
+                    New Content
+                </button>
+            </div>
         </div>
 
-        <div class="samples-section">
-            <h3>📋 Sample Outputs & Features</h3>
-            <div class="sample-grid">
-                <div class="sample-item">
-                    <h4>✨ Secure & Free</h4>
-                    <p>No API key required from users. Everything is handled securely in the backend using Google's free Gemini Pro API.</p>
+        <div class="features-section">
+            <h3>✨ Key Features</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4><span class="icon">🔒</span>Secure & Private</h4>
+                    <p>Your data remains secure with no API keys required from your side. All processing happens securely in our backend.</p>
                 </div>
-                <div class="sample-item">
-                    <h4>⚡ Instant Generation</h4>
-                    <p>Generate professional emails, meeting summaries, reports, and social media content in seconds with AI assistance.</p>
+                <div class="feature-card">
+                    <h4><span class="icon">⚡</span>Lightning Fast</h4>
+                    <p>Generate professional content in seconds with our optimized AI pipeline and minimal latency.</p>
                 </div>
-                <div class="sample-item">
-                    <h4>🛡️ Rate Limited</h4>
-                    <p>Built-in rate limiting and retry logic ensures stable performance and prevents API abuse.</p>
+                <div class="feature-card">
+                    <h4><span class="icon">🎨</span>Customizable</h4>
+                    <p>Tailor the tone, style and format to perfectly match your brand voice and communication needs.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('statusMessage');
-            statusEl.textContent = message;
-            statusEl.className = `status-message status-${type}`;
-            statusEl.style.display = 'block';
-            
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 4000);
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            if (show) {
-                document.getElementById('resultArea').style.display = 'none';
-            }
-        }
-
-        function showResult(content) {
-            document.getElementById('resultContent').textContent = content;
-            document.getElementById('resultArea').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-        }
-
-        // Simplified API call - NO API KEY NEEDED!
-        async function callAI(prompt) {
-            try {
-                const response = await fetch('/api/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        prompt: prompt
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `Server error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return data.content;
-            } catch (error) {
-                console.error('API Call Error:', error);
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    showStatus('Network error: Please ensure the backend server is running', 'error');
-                } else {
-                    showStatus(`Error: ${error.message}`, 'error');
-                }
-                return null;
-            }
-        }
-
-        async function generateEmail() {
-            const type = document.getElementById('emailType').value;
-            const context = document.getElementById('emailContext').value;
-            const tone = document.getElementById('emailTone').value;
-
-            if (!context.trim()) {
-                showStatus('Please provide context for the email', 'error');
-                return;
-            }
-
-            const prompt = `Generate a ${tone} ${type} email with the following context: ${context}. Make it professional and concise.`;
-            
-            showLoading(true);
-            const result = await callAI(prompt);
-            
-            if (result) {
-                showResult(result);
-            } else {
-                showLoading(false);
-            }
-        }
-
-        async function generateMeetingSummary() {
-            const title = document.getElementById('meetingTitle').value;
-            const notes = document.getElementById('meetingNotes').value;
-            const style = document.getElementById('summaryStyle').value;
-
-            if (!notes.trim()) {
-                showStatus('Please provide meeting notes', 'error');
-                return;
-            }
-
-            const prompt = `Create a ${style} meeting summary for "${title}" based on these notes: ${notes}. Format it professionally.`;
-            
-            showLoading(true);
-            const result = await callAI(prompt);
-            
-            if (result) {
-                showResult(result);
-            } else {
-                showLoading(false);
-            }
-        }
-
-        async function generateReport() {
-            const type = document.getElementById('reportType').value;
-            const data = document.getElementById('reportData').value;
-            const audience = document.getElementById('reportAudience').value;
-
-            if (!data.trim()) {
-                showStatus('Please provide report data/points', 'error');
-                return;
-            }
-
-            const prompt = `Generate a ${type} for ${audience} using this data: ${data}. Make it structured and professional.`;
-            
-            showLoading(true);
-            const result = await callAI(prompt);
-            
-            if (result) {
-                showResult(result);
-            } else {
-                showLoading(false);
-            }
-        }
-
-        async function generateSocialContent() {
-            const platform = document.getElementById('socialPlatform').value;
-            const content = document.getElementById('socialContent').value;
-            const style = document.getElementById('socialStyle').value;
-
-            if (!content.trim()) {
-                showStatus('Please provide content topic/message', 'error');
-                return;
-            }
-
-            const prompt = `Create a ${style} ${platform} post about: ${content}. Include relevant hashtags and make it engaging for the platform.`;
-            
-            showLoading(true);
-            const result = await callAI(prompt);
-            
-            if (result) {
-                showResult(result);
-            } else {
-                showLoading(false);
-            }
-        }
-
-        function copyToClipboard() {
-            const content = document.getElementById('resultContent').textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                showStatus('Content copied to clipboard!', 'success');
-            }).catch(() => {
-                showStatus('Failed to copy content', 'error');
-            });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            showStatus('🚀 Ready to generate content! No setup required.', 'success');
-        });
-    </script>
+    <script src="./script.js"></script>
 </body>
 </html>
