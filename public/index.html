@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Generator - Productivity Boosters</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .powered-by {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .powered-by h3 {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .powered-by p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .content-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            border-color: #3498db;
+        }
+
+        .content-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-card .icon {
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-area {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #27ae60;
+            display: none;
+        }
+
+        .result-area h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e6ed;
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .copy-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .samples-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 15px;
+        }
+
+        .samples-section h3 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .sample-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sample-item h4 {
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .sample-item p {
+            color: #636e72;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Content Generator</h1>
+            <p>Productivity Boosters - Generate professional content in seconds</p>
+        </div>
+
+        <div class="powered-by">
+            <h3>🤖 Powered by Google Gemini Pro</h3>
+            <p>Free AI generation with no API key required! Just start creating content instantly.</p>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <div class="content-types">
+            <!-- Email Assistant -->
+            <div class="content-card">
+                <h3><span class="icon">📧</span>Email Assistant</h3>
+                <div class="form-group">
+                    <label>Email Type:</label>
+                    <select id="emailType">
+                        <option value="follow-up">Follow-up Email</option>
+                        <option value="meeting-request">Meeting Request</option>
+                        <option value="thank-you">Thank You Email</option>
+                        <option value="apology">Apology Email</option>
+                        <option value="introduction">Introduction Email</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Context/Details:</label>
+                    <textarea id="emailContext" placeholder="e.g., Following up on delayed project with client ABC..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tone:</label>
+                    <select id="emailTone">
+                        <option value="professional">Professional</option>
+                        <option value="friendly">Friendly</option>
+                        <option value="formal">Formal</option>
+                        <option value="casual">Casual</option>
+                    </select>
+                </div>
+                <button class="generate-btn" onclick="generateEmail()">Generate Email</button>
+            </div>
+
+            <!-- Meeting Summarizer -->
+            <div class="content-card">
+                <h3><span class="icon">📋</span>Meeting Summarizer</h3>
+                <div class="form-group">
+                    <label>Meeting Title:</label>
+                    <input type="text" id="meetingTitle" placeholder="e.g., Weekly Team Standup">
+                </div>
+                <div class="form-group">
+                    <label>Meeting Notes/Bullet Points:</label>
+                    <textarea id="meetingNotes" placeholder="• Discussed project timeline&#10;• John will handle design&#10;• Next deadline: Friday"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Summary Style:</label>
+                    <select id="summaryStyle">
+                        <option value="concise">Concise</option>
+                        <option value="detailed">Detailed</option>
+                        <option value="action-items">Action Items Focus</option>
+                    </select>
+                </div>
+                <button class="generate-btn" onclick="generateMeetingSummary()">Generate Summary</button>
+            </div>
+
+            <!-- Report Generator -->
+            <div class="content-card">
+                <h3><span class="icon">📊</span>Report Generator</h3>
+                <div class="form-group">
+                    <label>Report Type:</label>
+                    <select id="reportType">
+                        <option value="weekly">Weekly Status Report</option>
+                        <option value="project">Project Update</option>
+                        <option value="monthly">Monthly Summary</option>
+                        <option value="incident">Incident Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Key Points/Data:</label>
+                    <textarea id="reportData" placeholder="• Completed 5 tasks&#10;• Budget: 80% used&#10;• Next milestones..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Target Audience:</label>
+                    <select id="reportAudience">
+                        <option value="management">Management</option>
+                        <option value="team">Team Members</option>
+                        <option value="client">Client</option>
+                        <option value="stakeholders">Stakeholders</option>
+                    </select>
+                </div>
+                <button class="generate-btn" onclick="generateReport()">Generate Report</button>
+            </div>
+
+            <!-- Social Media Content -->
+            <div class="content-card">
+                <h3><span class="icon">📱</span>Social Media Content</h3>
+                <div class="form-group">
+                    <label>Platform:</label>
+                    <select id="socialPlatform">
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Content Topic/Message:</label>
+                    <textarea id="socialContent" placeholder="e.g., Sharing insights about remote work productivity..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Content Style:</label>
+                    <select id="socialStyle">
+                        <option value="professional">Professional</option>
+                        <option value="engaging">Engaging</option>
+                        <option value="inspirational">Inspirational</option>
+                        <option value="educational">Educational</option>
+                    </select>
+                </div>
+                <button class="generate-btn" onclick="generateSocialContent()">Generate Content</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generating your content with AI...</p>
+        </div>
+
+        <div class="result-area" id="resultArea">
+            <h3>Generated Content</h3>
+            <div class="result-content" id="resultContent"></div>
+            <button class="copy-btn" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+        </div>
+
+        <div class="samples-section">
+            <h3>📋 Sample Outputs & Features</h3>
+            <div class="sample-grid">
+                <div class="sample-item">
+                    <h4>✨ Secure & Free</h4>
+                    <p>No API key required from users. Everything is handled securely in the backend using Google's free Gemini Pro API.</p>
+                </div>
+                <div class="sample-item">
+                    <h4>⚡ Instant Generation</h4>
+                    <p>Generate professional emails, meeting summaries, reports, and social media content in seconds with AI assistance.</p>
+                </div>
+                <div class="sample-item">
+                    <h4>🛡️ Rate Limited</h4>
+                    <p>Built-in rate limiting and retry logic ensures stable performance and prevents API abuse.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type}`;
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 4000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            if (show) {
+                document.getElementById('resultArea').style.display = 'none';
+            }
+        }
+
+        function showResult(content) {
+            document.getElementById('resultContent').textContent = content;
+            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Simplified API call - NO API KEY NEEDED!
+        async function callAI(prompt) {
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.content;
+            } catch (error) {
+                console.error('API Call Error:', error);
+                
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showStatus('Network error: Please ensure the backend server is running', 'error');
+                } else {
+                    showStatus(`Error: ${error.message}`, 'error');
+                }
+                return null;
+            }
+        }
+
+        async function generateEmail() {
+            const type = document.getElementById('emailType').value;
+            const context = document.getElementById('emailContext').value;
+            const tone = document.getElementById('emailTone').value;
+
+            if (!context.trim()) {
+                showStatus('Please provide context for the email', 'error');
+                return;
+            }
+
+            const prompt = `Generate a ${tone} ${type} email with the following context: ${context}. Make it professional and concise.`;
+            
+            showLoading(true);
+            const result = await callAI(prompt);
+            
+            if (result) {
+                showResult(result);
+            } else {
+                showLoading(false);
+            }
+        }
+
+        async function generateMeetingSummary() {
+            const title = document.getElementById('meetingTitle').value;
+            const notes = document.getElementById('meetingNotes').value;
+            const style = document.getElementById('summaryStyle').value;
+
+            if (!notes.trim()) {
+                showStatus('Please provide meeting notes', 'error');
+                return;
+            }
+
+            const prompt = `Create a ${style} meeting summary for "${title}" based on these notes: ${notes}. Format it professionally.`;
+            
+            showLoading(true);
+            const result = await callAI(prompt);
+            
+            if (result) {
+                showResult(result);
+            } else {
+                showLoading(false);
+            }
+        }
+
+        async function generateReport() {
+            const type = document.getElementById('reportType').value;
+            const data = document.getElementById('reportData').value;
+            const audience = document.getElementById('reportAudience').value;
+
+            if (!data.trim()) {
+                showStatus('Please provide report data/points', 'error');
+                return;
+            }
+
+            const prompt = `Generate a ${type} for ${audience} using this data: ${data}. Make it structured and professional.`;
+            
+            showLoading(true);
+            const result = await callAI(prompt);
+            
+            if (result) {
+                showResult(result);
+            } else {
+                showLoading(false);
+            }
+        }
+
+        async function generateSocialContent() {
+            const platform = document.getElementById('socialPlatform').value;
+            const content = document.getElementById('socialContent').value;
+            const style = document.getElementById('socialStyle').value;
+
+            if (!content.trim()) {
+                showStatus('Please provide content topic/message', 'error');
+                return;
+            }
+
+            const prompt = `Create a ${style} ${platform} post about: ${content}. Include relevant hashtags and make it engaging for the platform.`;
+            
+            showLoading(true);
+            const result = await callAI(prompt);
+            
+            if (result) {
+                showResult(result);
+            } else {
+                showLoading(false);
+            }
+        }
+
+        function copyToClipboard() {
+            const content = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showStatus('Content copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy content', 'error');
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus('🚀 Ready to generate content! No setup required.', 'success');
+        });
+    </script>
+</body>
+</html>
